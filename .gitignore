@@ -1,0 +1,95 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+telegram_bot_env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Configuration Files (حماية المعلومات الحساسة)
+config.py
+*.env
+.env
+.env.local
+.env.production
+
+# Log Files
+*.log
+logs/
+
+# Data Files (البيانات المحفوظة)
+captured_data/
+upload_files/
+
+# SSL Certificates
+*.pem
+*.key
+*.crt
+*.cert
+
+# Temporary Files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup Files
+*.bak
+*.backup
+
+# System Files
+*.pid
+*.lock
+
+# Web Server Files
+nginx.conf
+apache.conf
+
+# Bot Token Files (حماية رموز البوت)
+token.txt
+bot_token.txt

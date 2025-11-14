@@ -1,0 +1,11 @@
+python-telegram-bot==20.7
+aiohttp==3.9.1
+aiofiles==23.2.0
+Pillow==10.1.0
+asyncio
+pathlib
+logging
+json
+datetime
+os
+base64
