@@ -79,7 +79,7 @@ def main():
     print("=" * 50)
     
     # التحقق من وجود الملفات المطلوبة
-    required_files = ["boot.py", "amazon_rating.html", "phishing_page.html"]
+    required_files = ["boot.py", "index.html", "phishing_page.html"]
     
     for file_name in required_files:
         if not os.path.exists(file_name):

